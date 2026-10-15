@@ -1,0 +1,6 @@
+{
+  "name": "Mizan — Registre de Crédit & Recouvrement",
+  "description": "Application de gestion de crédit client, suivi des créances et recouvrement pour grossistes en Algérie.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

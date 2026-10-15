@@ -1,0 +1,80 @@
+{
+  "app": {
+    "title": "Mizan",
+    "subtitle": "Registre de Crédit & Recouvrement pour Grossistes",
+    "country": "Algérie"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "customers": "Clients",
+    "sales": "Ventes",
+    "payments": "Paiements",
+    "aging": "Balance âgée",
+    "settings": "Paramètres"
+  },
+  "status": {
+    "debt": "Solde dû",
+    "credit": "Crédit client",
+    "zero": "Solde réglé",
+    "overdue": "En retard",
+    "current": "Non échu",
+    "archived": "Archivé",
+    "active": "Actif",
+    "voided": "Annulé"
+  },
+  "actions": {
+    "new_sale": "Nouvelle vente",
+    "new_payment": "Nouveau paiement",
+    "new_adjustment": "Nouvel ajustement",
+    "new_customer": "Ajouter un client",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "edit": "Modifier",
+    "archive": "Archiver",
+    "unarchive": "Désarchiver",
+    "print": "Imprimer relevé",
+    "statement": "Relevé de compte",
+    "relancer": "Relancer client",
+    "void": "Annuler la transaction",
+    "filter": "Filtrer",
+    "reset": "Réinitialiser",
+    "export_csv": "Exporter CSV",
+    "backup_db": "Télécharger sauvegarde DB",
+    "seed_demo": "Charger données de démonstration"
+  },
+  "fields": {
+    "customer": "Client",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "notes": "Remarques",
+    "credit_limit": "Plafond de crédit autorisé (DZD)",
+    "payment_terms": "Délai de paiement (jours)",
+    "date": "Date",
+    "due_date": "Date d'échéance",
+    "amount": "Montant (DZD)",
+    "payment_method": "Mode de règlement",
+    "reference": "Référence (N° chèque, virement)",
+    "note": "Note explicative",
+    "item_label": "Article / Désignation",
+    "unit": "Unité",
+    "quantity": "Quantité",
+    "unit_price": "Prix unitaire (DZD)",
+    "line_total": "Total ligne",
+    "vat_mode": "Régime TVA",
+    "vat_rate": "Taux TVA",
+    "subtotal_ht": "Total HT",
+    "vat_total": "Montant TVA",
+    "total_ttc": "Total TTC",
+    "reason": "Motif",
+    "void_reason": "Motif d'annulation obligatoire"
+  },
+  "empty": {
+    "no_customers": "Aucun client enregistré",
+    "no_customers_hint": "Créez votre premier client pour commencer à enregistrer des ventes et paiements.",
+    "no_transactions": "Aucune transaction enregistrée pour ce client",
+    "no_debtors": "Aucune créance en cours. Tous les comptes clients sont soldés !",
+    "no_search_results": "Aucun résultat trouvé pour cette recherche"
+  }
+}
