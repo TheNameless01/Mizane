@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { Customer } from '../shared/types';
 import { formatDZD } from '../shared/money';
 import { MoneyDisplay } from './MoneyDisplay';
+import { useI18n } from '../shared/i18n/context';
 import {
   Users,
   Search,
   UserPlus,
   Phone,
   ChevronRight,
-  Filter,
   AlertTriangle,
-  ArrowUpDown,
 } from 'lucide-react';
 
 interface CustomersViewProps {
@@ -24,11 +23,13 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
   onSelectCustomer,
   onOpenCustomerModal,
 }) => {
+  const { t, locale } = useI18n();
+  const isAr = locale === 'ar';
+
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'debt' | 'credit' | 'archived'>('all');
 
   const filtered = customers.filter((c) => {
-    // Search match
     const q = search.trim().toLowerCase();
     const matchesSearch =
       !q ||
@@ -38,12 +39,11 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
 
     if (!matchesSearch) return false;
 
-    // Filter type
     const bal = c.balance_centimes || 0;
     if (filter === 'debt') return bal > 0 && !c.archived_at;
     if (filter === 'credit') return bal < 0 && !c.archived_at;
     if (filter === 'archived') return Boolean(c.archived_at);
-    return !c.archived_at; // 'all' default excludes archived unless explicitly requested
+    return !c.archived_at;
   });
 
   return (
@@ -52,10 +52,13 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Registre des clients
+            {isAr ? 'سجل الزبائن والديون' : 'Registre des clients'}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            {customers.length} client{customers.length > 1 ? 's' : ''} au total — Suivi des créances et soldes
+            {customers.length}{' '}
+            {isAr
+              ? 'زبون مسجل — متابعة الأرصدة والديون في الوقت الفعلي'
+              : `client${customers.length > 1 ? 's' : ''} au total — Suivi des créances et soldes`}
           </p>
         </div>
 
@@ -64,7 +67,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
           className="flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors"
         >
           <UserPlus className="w-4 h-4" />
-          Ajouter un client
+          {isAr ? 'إضافة زبون جديد' : 'Ajouter un client'}
         </button>
       </div>
 
@@ -74,7 +77,11 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
           <Search className="w-4 h-4 absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Rechercher par nom, téléphone, ville..."
+            placeholder={
+              isAr
+                ? 'البحث باسم الزبون، رقم الهاتف أو العنوان...'
+                : 'Rechercher par nom, téléphone, ville...'
+            }
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full text-xs ps-9 pe-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 focus:bg-white transition-all"
@@ -90,7 +97,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            Tous les actifs
+            {isAr ? 'كل النشطين' : 'Tous les actifs'}
           </button>
           <button
             onClick={() => setFilter('debt')}
@@ -100,7 +107,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
                 : 'bg-amber-50 text-amber-800 hover:bg-amber-100'
             }`}
           >
-            Avec créance due
+            {isAr ? 'عليهم ديون' : 'Avec créance due'}
           </button>
           <button
             onClick={() => setFilter('credit')}
@@ -110,7 +117,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
                 : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
             }`}
           >
-            Avec crédit / acompte
+            {isAr ? 'لهم رصيد دائن' : 'Avec crédit / acompte'}
           </button>
           <button
             onClick={() => setFilter('archived')}
@@ -120,7 +127,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
                 : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
             }`}
           >
-            Archivés
+            {isAr ? 'المؤرشفون' : 'Archivés'}
           </button>
         </div>
       </div>
@@ -132,10 +139,16 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 text-base">Aucun client trouvé</h3>
+            <h3 className="font-bold text-slate-800 text-base">
+              {isAr ? 'لم يتم العثور على أي زبون' : 'Aucun client trouvé'}
+            </h3>
             <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
               {search
-                ? 'Aucun résultat ne correspond à votre recherche.'
+                ? isAr
+                  ? 'لا توجد أي نتائج مطابقة لكلمة البحث.'
+                  : 'Aucun résultat ne correspond à votre recherche.'
+                : isAr
+                ? 'سجل الزبائن فارغ حالياً. أضف زبونك الأول للبدء.'
                 : 'Votre registre est vide. Ajoutez votre premier client pour commencer le suivi de compte.'}
             </p>
           </div>
@@ -145,7 +158,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
               className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-xs"
             >
               <UserPlus className="w-4 h-4" />
-              Ajouter un client maintenant
+              {isAr ? 'إضافة زبون الآن' : 'Ajouter un client maintenant'}
             </button>
           )}
         </div>
@@ -155,11 +168,11 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
             <table className="w-full text-xs text-start border-collapse">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
-                  <th className="py-3 px-4 text-start">Nom du client</th>
-                  <th className="py-3 px-4 text-start">Coordonnées</th>
-                  <th className="py-3 px-4 text-start">Plafond de crédit</th>
-                  <th className="py-3 px-4 text-end">Solde actuel</th>
-                  <th className="py-3 px-4 text-end">Action</th>
+                  <th className="py-3 px-4 text-start">{isAr ? 'اسم الزبون' : 'Nom du client'}</th>
+                  <th className="py-3 px-4 text-start">{isAr ? 'معلومات الاتصال' : 'Coordonnées'}</th>
+                  <th className="py-3 px-4 text-start">{isAr ? 'سقف الدين' : 'Plafond de crédit'}</th>
+                  <th className="py-3 px-4 text-end">{isAr ? 'الرصيد الحالي' : 'Solde actuel'}</th>
+                  <th className="py-3 px-4 text-end">{isAr ? 'إجراء' : 'Action'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -183,7 +196,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
                           </span>
                           {isOverLimit && (
                             <span
-                              title="Plafond de crédit dépassé !"
+                              title={isAr ? 'تم تجاوز سقف الدين!' : 'Plafond de crédit dépassé !'}
                               className="p-1 rounded bg-rose-100 text-rose-700 inline-flex items-center"
                             >
                               <AlertTriangle className="w-3.5 h-3.5" />
@@ -191,7 +204,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
                           )}
                           {c.archived_at && (
                             <span className="px-1.5 py-0.5 text-[10px] rounded bg-slate-200 text-slate-600 font-medium">
-                              Archivé
+                              {isAr ? 'مؤرشف' : 'Archivé'}
                             </span>
                           )}
                         </div>
@@ -209,15 +222,17 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
                             {c.phone}
                           </span>
                         ) : (
-                          <span className="text-slate-400 italic">Non renseigné</span>
+                          <span className="text-slate-400 italic">
+                            {isAr ? 'غير مسجل' : 'Non renseigné'}
+                          </span>
                         )}
                       </td>
 
                       <td className="py-3.5 px-4 text-slate-600 tabular-nums">
                         {c.credit_limit_centimes !== null ? (
-                          <span>{formatDZD(c.credit_limit_centimes)}</span>
+                          <span className="font-mono">{formatDZD(c.credit_limit_centimes, { locale })}</span>
                         ) : (
-                          <span className="text-slate-400 italic">Illimité</span>
+                          <span className="text-slate-400 italic">{isAr ? 'غير محدود' : 'Illimité'}</span>
                         )}
                       </td>
 
@@ -227,7 +242,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
 
                       <td className="py-3.5 px-4 text-end">
                         <div className="inline-flex items-center justify-center w-7 h-7 rounded-full text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-colors">
-                          <ChevronRight className="w-4 h-4" />
+                          <ChevronRight className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
                         </div>
                       </td>
                     </tr>

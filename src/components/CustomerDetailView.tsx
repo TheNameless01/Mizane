@@ -5,6 +5,7 @@ import { formatDateFr } from '../shared/dates';
 import { MoneyDisplay } from './MoneyDisplay';
 import { RemindModal } from './RemindModal';
 import { VoidModal } from './VoidModal';
+import { useI18n } from '../shared/i18n/context';
 import {
   ArrowLeft,
   ShoppingCart,
@@ -18,7 +19,6 @@ import {
   Phone,
   MapPin,
   Clock,
-  ShieldAlert,
   Ban,
   RefreshCw,
 } from 'lucide-react';
@@ -44,6 +44,9 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
   onOpenStatement,
   onEditCustomer,
 }) => {
+  const { t, locale } = useI18n();
+  const isAr = locale === 'ar';
+
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [statement, setStatement] = useState<CustomerStatement | null>(null);
   const [loading, setLoading] = useState(true);
@@ -121,7 +124,9 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
     return (
       <div className="flex flex-col items-center justify-center p-12 text-slate-500">
         <RefreshCw className="w-8 h-8 animate-spin mb-3 text-indigo-600" />
-        <p className="text-sm font-medium">Chargement du compte client...</p>
+        <p className="text-sm font-medium">
+          {isAr ? 'جاري تحميل ملف وحساب الزبون...' : 'Chargement du compte client...'}
+        </p>
       </div>
     );
   }
@@ -134,22 +139,19 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
           onClick={onBack}
           className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium"
         >
-          Retour à la liste des clients
+          {isAr ? 'العودة لقائمة الزبائن' : 'Retour à la liste des clients'}
         </button>
       </div>
     );
   }
 
   const balanceCentimes = customer.balance_centimes || 0;
-  const status = getBalanceStatus(balanceCentimes);
 
-  // Credit limit evaluation
   let creditLimitPercent = 0;
   if (customer.credit_limit_centimes && customer.credit_limit_centimes > 0) {
     creditLimitPercent = Math.min(100, Math.round((balanceCentimes / customer.credit_limit_centimes) * 100));
   }
 
-  // Filter rows for history
   const filteredRows = (statement?.rows || []).filter((r) => {
     if (activeTab === 'sales') return r.type === 'sale';
     if (activeTab === 'payments') return r.type === 'payment';
@@ -160,13 +162,13 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Top back navigation and main actions */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white border border-slate-200 rounded-lg shadow-xs hover:bg-slate-50 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Retour aux clients
+          <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
+          {isAr ? 'العودة للزبائن' : 'Retour aux clients'}
         </button>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -176,7 +178,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
               className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-xs transition-colors"
             >
               <MessageSquare className="w-4 h-4" />
-              Relancer (WhatsApp / SMS)
+              {isAr ? 'تذكير (واتساب / رسالة)' : 'Relancer (WhatsApp / SMS)'}
             </button>
           )}
 
@@ -185,7 +187,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
             className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-xs transition-colors"
           >
             <ShoppingCart className="w-4 h-4" />
-            Nouvelle vente
+            {isAr ? 'بيع جديد' : 'Nouvelle vente'}
           </button>
 
           <button
@@ -193,7 +195,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
             className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-xs transition-colors"
           >
             <CreditCard className="w-4 h-4" />
-            Nouveau paiement
+            {isAr ? 'تسجيل قبض' : 'Nouveau paiement'}
           </button>
 
           <button
@@ -201,7 +203,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
             className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg shadow-xs transition-colors"
           >
             <Sliders className="w-4 h-4 text-slate-500" />
-            Ajustement
+            {isAr ? 'تسوية رصيد' : 'Ajustement'}
           </button>
 
           <button
@@ -209,13 +211,13 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
             className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg shadow-xs transition-colors"
           >
             <FileText className="w-4 h-4 text-slate-500" />
-            Imprimer relevé
+            {isAr ? 'طباعة كشف الحساب' : 'Imprimer relevé'}
           </button>
 
           <button
             onClick={() => onEditCustomer(customer)}
             className="p-2 text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
-            title="Modifier le client"
+            title={isAr ? 'تعديل بيانات الزبون' : 'Modifier le client'}
           >
             <Edit2 className="w-4 h-4" />
           </button>
@@ -227,7 +229,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
                 ? 'text-amber-700 border-amber-300 bg-amber-50 hover:bg-amber-100'
                 : 'text-slate-400 border-slate-200 hover:text-rose-600 hover:bg-rose-50'
             }`}
-            title={customer.archived_at ? 'Désarchiver le client' : 'Archiver le client'}
+            title={customer.archived_at ? (isAr ? 'إلغاء أرشفة الزبون' : 'Désarchiver le client') : (isAr ? 'أرشفة الزبون' : 'Archiver le client')}
           >
             {customer.archived_at ? <ArchiveRestore className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
           </button>
@@ -242,7 +244,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
               <h1 className="text-2xl font-black text-slate-900 tracking-tight">{customer.name}</h1>
               {customer.archived_at && (
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-200 text-slate-700">
-                  Archivé
+                  {isAr ? 'مؤرشف' : 'Archivé'}
                 </span>
               )}
             </div>
@@ -251,7 +253,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
               {customer.phone && (
                 <div className="flex items-center gap-1 font-medium">
                   <Phone className="w-3.5 h-3.5 text-slate-400" />
-                  <a href={`tel:${customer.phone}`} className="hover:text-indigo-600">
+                  <a href={`tel:${customer.phone}`} className="hover:text-indigo-600 font-mono">
                     {customer.phone}
                   </a>
                 </div>
@@ -264,7 +266,10 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
               )}
               <div className="flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5 text-slate-400" />
-                <span>Délai accordé : <strong>{customer.payment_terms_days} jours</strong></span>
+                <span>
+                  {isAr ? 'أجل السداد الممنوح : ' : 'Délai accordé : '}
+                  <strong>{customer.payment_terms_days} {isAr ? 'يوم' : 'jours'}</strong>
+                </span>
               </div>
             </div>
 
@@ -278,14 +283,16 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
           {/* Current Balance Display */}
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-start lg:text-end min-w-[240px]">
             <span className="text-xs uppercase tracking-wider font-bold text-slate-500 block mb-1">
-              Solde en temps réel
+              {isAr ? 'الرصيد المباشر' : 'Solde en temps réel'}
             </span>
             <MoneyDisplay centimes={balanceCentimes} size="xl" showBadge />
 
             {customer.credit_limit_centimes !== null && customer.credit_limit_centimes > 0 && (
               <div className="mt-3 pt-2 border-t border-slate-200">
                 <div className="flex justify-between text-[11px] font-medium text-slate-600 mb-1">
-                  <span>Plafond : {formatDZD(customer.credit_limit_centimes)}</span>
+                  <span>
+                    {isAr ? 'سقف الدين :' : 'Plafond :'} {formatDZD(customer.credit_limit_centimes, { locale })}
+                  </span>
                   <span className={creditLimitPercent >= 90 ? 'text-rose-600 font-bold' : ''}>
                     {creditLimitPercent}%
                   </span>
@@ -312,28 +319,28 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
-            Total des ventes (TTC)
+            {isAr ? 'مجموع المبيعات (TTC)' : 'Total des ventes (TTC)'}
           </span>
-          <span className="text-xl font-bold text-slate-900 tabular-nums block mt-1">
-            {formatDZD(customer.total_sales_centimes || 0)}
-          </span>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
-            Total des règlements
-          </span>
-          <span className="text-xl font-bold text-emerald-700 tabular-nums block mt-1">
-            {formatDZD(customer.total_payments_centimes || 0)}
+          <span className="text-xl font-bold text-slate-900 tabular-nums font-mono block mt-1">
+            {formatDZD(customer.total_sales_centimes || 0, { locale })}
           </span>
         </div>
 
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
-            Ajustements cumulés
+            {isAr ? 'مجموع المقبوضات' : 'Total des règlements'}
           </span>
-          <span className="text-xl font-bold text-slate-800 tabular-nums block mt-1">
-            {formatDZD(customer.total_adjustments_centimes || 0, { showSign: true })}
+          <span className="text-xl font-bold text-emerald-700 tabular-nums font-mono block mt-1">
+            {formatDZD(customer.total_payments_centimes || 0, { locale })}
+          </span>
+        </div>
+
+        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
+            {isAr ? 'التسويات التراكمية' : 'Ajustements cumulés'}
+          </span>
+          <span className="text-xl font-bold text-slate-800 tabular-nums font-mono block mt-1">
+            {formatDZD(customer.total_adjustments_centimes || 0, { showSign: true, locale })}
           </span>
         </div>
       </div>
@@ -342,7 +349,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
           <h3 className="font-bold text-slate-900 text-sm">
-            Historique chronologique des écritures
+            {isAr ? 'سجل العمليات التاريخي والأرصدة المتعاقبة' : 'Historique chronologique des écritures'}
           </h3>
 
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg text-xs">
@@ -352,7 +359,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
                 activeTab === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Tous ({statement?.rows.length || 0})
+              {isAr ? 'الكل' : 'Tous'} ({statement?.rows.length || 0})
             </button>
             <button
               onClick={() => setActiveTab('sales')}
@@ -360,7 +367,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
                 activeTab === 'sales' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Ventes
+              {isAr ? 'المبيعات' : 'Ventes'}
             </button>
             <button
               onClick={() => setActiveTab('payments')}
@@ -368,7 +375,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
                 activeTab === 'payments' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Paiements
+              {isAr ? 'المقبوضات' : 'Paiements'}
             </button>
             <button
               onClick={() => setActiveTab('adjustments')}
@@ -376,7 +383,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
                 activeTab === 'adjustments' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Ajustements
+              {isAr ? 'التسويات' : 'Ajustements'}
             </button>
           </div>
         </div>
@@ -385,20 +392,20 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
           <table className="w-full text-xs text-start border-collapse">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
-                <th className="py-2.5 px-4 text-start">Date</th>
-                <th className="py-2.5 px-4 text-start">Type & Réf</th>
-                <th className="py-2.5 px-4 text-start">Désignation / Note</th>
-                <th className="py-2.5 px-4 text-end">Débit (+)</th>
-                <th className="py-2.5 px-4 text-end">Crédit (-)</th>
-                <th className="py-2.5 px-4 text-end">Solde Courant</th>
-                <th className="py-2.5 px-4 text-center">Action</th>
+                <th className="py-2.5 px-4 text-start">{isAr ? 'التاريخ' : 'Date'}</th>
+                <th className="py-2.5 px-4 text-start">{isAr ? 'النوع والرقم' : 'Type & Réf'}</th>
+                <th className="py-2.5 px-4 text-start">{isAr ? 'البيان / ملاحظة' : 'Désignation / Note'}</th>
+                <th className="py-2.5 px-4 text-end">{isAr ? 'مدين (+)' : 'Débit (+)'}</th>
+                <th className="py-2.5 px-4 text-end">{isAr ? 'دائن (-)' : 'Crédit (-)'}</th>
+                <th className="py-2.5 px-4 text-end">{isAr ? 'الرصيد الجاري' : 'Solde Courant'}</th>
+                <th className="py-2.5 px-4 text-center">{isAr ? 'إلغاء' : 'Action'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredRows.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-slate-400 italic">
-                    Aucune opération enregistrée pour ce filtre.
+                    {isAr ? 'لا توجد عمليات مسجلة لهذا التصنيف.' : 'Aucune opération enregistrée pour ce filtre.'}
                   </td>
                 </tr>
               ) : (
@@ -428,18 +435,18 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
                         )}
                         {row.is_voided && (
                           <span className="inline-block text-[10px] text-rose-700 font-bold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 not-italic">
-                            [ANNULÉ : {row.void_reason || 'Non précisé'}]
+                            [{isAr ? 'ملغى :' : 'ANNULÉ :'} {row.void_reason || (isAr ? 'بدون سبب' : 'Non précisé')}]
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-end tabular-nums font-semibold text-slate-900">
-                        {row.debit_centimes > 0 ? formatDZD(row.debit_centimes) : '—'}
+                      <td className="py-3 px-4 text-end tabular-nums font-mono font-semibold text-slate-900">
+                        {row.debit_centimes > 0 ? formatDZD(row.debit_centimes, { locale }) : '—'}
                       </td>
-                      <td className="py-3 px-4 text-end tabular-nums font-semibold text-emerald-700">
-                        {row.credit_centimes > 0 ? formatDZD(row.credit_centimes) : '—'}
+                      <td className="py-3 px-4 text-end tabular-nums font-mono font-semibold text-emerald-700">
+                        {row.credit_centimes > 0 ? formatDZD(row.credit_centimes, { locale }) : '—'}
                       </td>
-                      <td className="py-3 px-4 text-end tabular-nums font-bold text-slate-900">
-                        {formatDZD(row.running_balance_centimes)}
+                      <td className="py-3 px-4 text-end tabular-nums font-mono font-bold text-slate-900">
+                        {formatDZD(row.running_balance_centimes, { locale })}
                       </td>
                       <td className="py-3 px-4 text-center whitespace-nowrap">
                         {!row.is_voided && (itemType === 'sale' || itemType === 'payment') && (
@@ -452,7 +459,7 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
                               })
                             }
                             className="p-1 text-slate-400 hover:text-rose-600 transition-colors rounded"
-                            title="Annuler cette écriture"
+                            title={isAr ? 'إلغاء هذه العملية' : 'Annuler cette écriture'}
                           >
                             <Ban className="w-3.5 h-3.5" />
                           </button>
@@ -479,7 +486,11 @@ export const CustomerDetailView: React.FC<CustomerDetailViewProps> = ({
       {/* Void Modal */}
       {voidingTarget && (
         <VoidModal
-          title={voidingTarget.type === 'sale' ? "Annulation d'une vente" : "Annulation d'un paiement"}
+          title={
+            voidingTarget.type === 'sale'
+              ? isAr ? 'إلغاء عملية بيع' : "Annulation d'une vente"
+              : isAr ? 'إلغاء وصل قبض' : "Annulation d'un paiement"
+          }
           itemDescription={voidingTarget.description}
           onConfirm={handleConfirmVoid}
           onClose={() => setVoidingTarget(null)}

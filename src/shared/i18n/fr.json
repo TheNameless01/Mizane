@@ -6,9 +6,9 @@
   },
   "nav": {
     "dashboard": "Tableau de bord",
-    "customers": "Clients",
+    "customers": "Clients & Soldes",
     "sales": "Ventes",
-    "payments": "Paiements",
+    "payments": "Règlements",
     "aging": "Balance âgée",
     "settings": "Paramètres"
   },
@@ -24,7 +24,7 @@
   },
   "actions": {
     "new_sale": "Nouvelle vente",
-    "new_payment": "Nouveau paiement",
+    "new_payment": "Nouveau règlement",
     "new_adjustment": "Nouvel ajustement",
     "new_customer": "Ajouter un client",
     "save": "Enregistrer",
@@ -42,12 +42,15 @@
     "reset": "Réinitialiser",
     "export_csv": "Exporter CSV",
     "backup_db": "Télécharger sauvegarde DB",
-    "seed_demo": "Charger données de démonstration"
+    "seed_demo": "Charger données démo",
+    "flush_db": "Vider la base de données (Reset)",
+    "back": "Retour"
   },
   "fields": {
     "customer": "Client",
+    "customer_name": "Nom / Raison sociale du client",
     "phone": "Téléphone",
-    "address": "Adresse",
+    "address": "Adresse / Ville / Wilaya",
     "notes": "Remarques",
     "credit_limit": "Plafond de crédit autorisé (DZD)",
     "payment_terms": "Délai de paiement (jours)",
@@ -70,11 +73,37 @@
     "reason": "Motif",
     "void_reason": "Motif d'annulation obligatoire"
   },
+  "modals": {
+    "new_sale_title": "Enregistrer une nouvelle vente",
+    "new_payment_title": "Enregistrer un encaissement",
+    "new_customer_title": "Nouveau client",
+    "edit_customer_title": "Modifier la fiche client",
+    "new_adjustment_title": "Ajustement & Correction de solde",
+    "void_title": "Annuler une transaction",
+    "remind_title": "Relance client (WhatsApp / SMS / Appel)",
+    "flush_title": "Confirmation de réinitialisation complète",
+    "select_customer": "Sélectionnez un client...",
+    "cash_sale": "Vente au comptant (Espèces)",
+    "credit_sale": "Vente à crédit (Compte client)",
+    "add_line": "+ Ajouter une ligne",
+    "debit_direction": "Augmenter le solde dû (+) — Facturation / Créance",
+    "credit_direction": "Diminuer le solde dû (-) — Avoir / Remise",
+    "save_customer": "Enregistrer le client",
+    "saving": "Enregistrement...",
+    "record_sale": "Valider et enregistrer la vente",
+    "record_payment": "Valider et enregistrer le règlement"
+  },
   "empty": {
     "no_customers": "Aucun client enregistré",
-    "no_customers_hint": "Créez votre premier client pour commencer à enregistrer des ventes et paiements.",
+    "no_customers_hint": "Créez votre premier client ou chargez des données de test pour explorer l'application.",
     "no_transactions": "Aucune transaction enregistrée pour ce client",
     "no_debtors": "Aucune créance en cours. Tous les comptes clients sont soldés !",
     "no_search_results": "Aucun résultat trouvé pour cette recherche"
+  },
+  "confirm": {
+    "flush_warning": "Attention : cette action supprimera définitivement tous les clients, ventes, paiements, ajustements et historiques, et remettra la numérotation à zéro.",
+    "flush_action": "Oui, tout effacer définitivement",
+    "seed_info": "Un jeu de 5 clients algériens avec ventes, paiements et créances en retard sera injecté.",
+    "seed_action": "Charger le jeu de test"
   }
 }

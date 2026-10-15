@@ -73,15 +73,16 @@ export function getAlgiersDayBoundariesUtc(algiersDateYmd: string): {
 }
 
 /**
- * Formats a UTC ISO timestamp into a human-friendly French display string,
- * evaluated in Africa/Algiers.
- * e.g., "15 oct. 2026" or "15/10/2026 14:30"
+ * Formats a UTC ISO timestamp into a human-friendly display string,
+ * evaluated in Africa/Algiers. Supports both 'fr' and 'ar' locales.
+ * e.g., "15 oct. 2026" / "15 أكتوبر 2026" or "15/10/2026 14:30"
  */
-export function formatDateFr(
+export function formatDate(
   utcIso: string | null | undefined,
   options?: {
     includeTime?: boolean;
     format?: 'short' | 'long' | 'numeric';
+    locale?: 'fr' | 'ar';
   }
 ): string {
   if (!utcIso) return '—';
@@ -90,6 +91,7 @@ export function formatDateFr(
 
   const format = options?.format || 'short';
   const includeTime = options?.includeTime ?? false;
+  const locale = options?.locale === 'ar' ? 'ar-DZ' : 'fr-DZ';
 
   const dateOptions: Intl.DateTimeFormatOptions = {
     timeZone: ALGIERS_TIMEZONE,
@@ -104,7 +106,20 @@ export function formatDateFr(
     dateOptions.minute = '2-digit';
   }
 
-  return new Intl.DateTimeFormat('fr-DZ', dateOptions).format(d);
+  return new Intl.DateTimeFormat(locale, dateOptions).format(d);
+}
+
+/**
+ * Backward compatibility alias for formatDate in French.
+ */
+export function formatDateFr(
+  utcIso: string | null | undefined,
+  options?: {
+    includeTime?: boolean;
+    format?: 'short' | 'long' | 'numeric';
+  }
+): string {
+  return formatDate(utcIso, { ...options, locale: 'fr' });
 }
 
 /**

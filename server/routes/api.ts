@@ -367,3 +367,43 @@ apiRouter.get('/export/csv', (req: Request, res: Response) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// -------------------------------------------------------------
+// Seed and Flush Endpoints
+// -------------------------------------------------------------
+import { runSeed } from '../seed';
+
+apiRouter.post('/seed', (req: Request, res: Response) => {
+  try {
+    runSeed();
+    res.json({ success: true, message: 'Données de démonstration chargées avec succès' });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+apiRouter.post('/flush', (req: Request, res: Response) => {
+  try {
+    const db = getDb();
+    db.transaction(() => {
+      db.prepare('DELETE FROM idempotency_keys').run();
+      db.prepare('DELETE FROM audit_log').run();
+      db.prepare('DELETE FROM sale_items').run();
+      db.prepare('DELETE FROM sales').run();
+      db.prepare('DELETE FROM payments').run();
+      db.prepare('DELETE FROM adjustments').run();
+      db.prepare('DELETE FROM customers').run();
+      try {
+        db.prepare(
+          "DELETE FROM sqlite_sequence WHERE name IN ('customers', 'sales', 'sale_items', 'payments', 'adjustments', 'audit_log')"
+        ).run();
+      } catch {
+        // ignore if table doesn't have sequence
+      }
+    })();
+    res.json({ success: true, message: 'Base de données vidée et réinitialisée à zéro' });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+

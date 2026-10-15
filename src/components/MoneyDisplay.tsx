@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatDZD, getBalanceStatus } from '../shared/money';
+import { useI18n } from '../shared/i18n/context';
 
 interface MoneyDisplayProps {
   centimes: number;
@@ -16,8 +17,9 @@ export const MoneyDisplay: React.FC<MoneyDisplayProps> = ({
   showSign = false,
   className = '',
 }) => {
-  const status = getBalanceStatus(centimes);
-  const formatted = formatDZD(centimes, { showSign });
+  const { locale } = useI18n();
+  const status = getBalanceStatus(centimes, locale);
+  const formatted = formatDZD(centimes, { showSign, locale });
 
   const sizeClasses = {
     sm: 'text-sm',
@@ -28,7 +30,7 @@ export const MoneyDisplay: React.FC<MoneyDisplayProps> = ({
 
   return (
     <div className={`inline-flex items-center gap-2 ${className}`}>
-      <span className={`tabular-nums ${sizeClasses} ${status.textClass}`}>
+      <span className={`tabular-nums font-mono ${sizeClasses} ${status.textClass}`}>
         {formatted}
       </span>
       {showBadge && (

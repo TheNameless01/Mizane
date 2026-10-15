@@ -179,6 +179,8 @@ export function formatDZD(
     showSign?: boolean;
     showSymbol?: boolean;
     alwaysDecimals?: boolean;
+    locale?: 'fr' | 'ar';
+    symbol?: string;
   }
 ): string {
   const isNegative = centimes < 0;
@@ -199,7 +201,9 @@ export function formatDZD(
   formatted = formatted.replace(/[\u202F\u00A0]/g, ' ');
 
   const sign = isNegative ? '-' : options?.showSign && centimes > 0 ? '+' : '';
-  const symbol = options?.showSymbol !== false ? ' DZD' : '';
+  const isArabic = options?.locale === 'ar';
+  const defaultSymbol = isArabic ? ' دج' : ' DZD';
+  const symbol = options?.showSymbol !== false ? (options?.symbol ? ` ${options.symbol}` : defaultSymbol) : '';
 
   return `${sign}${formatted}${symbol}`;
 }
@@ -208,34 +212,40 @@ export function formatDZD(
  * Returns human-readable label and status for customer balance.
  * Positive = Customer owes money ("Solde dû")
  * Negative = Customer has credit / advance payment ("Crédit client")
- * Zero = Cleared ("Solde nul")
+ * Zero = Cleared ("Solde réglé")
  */
-export function getBalanceStatus(balanceCentimes: number): {
+export function getBalanceStatus(
+  balanceCentimes: number,
+  locale: 'fr' | 'ar' = 'fr'
+): {
   type: 'debt' | 'credit' | 'zero';
   label: string;
   badgeClass: string;
   textClass: string;
 } {
+  const isArabic = locale === 'ar';
+
   if (balanceCentimes > 0) {
     return {
       type: 'debt',
-      label: 'Solde dû',
+      label: isArabic ? 'دين مستحق' : 'Solde dû',
       badgeClass: 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-800',
       textClass: 'text-amber-700 dark:text-amber-400 font-semibold',
     };
   } else if (balanceCentimes < 0) {
     return {
       type: 'credit',
-      label: 'Crédit client',
+      label: isArabic ? 'رصيد دائن (تسبيق)' : 'Crédit client',
       badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-200 dark:border-emerald-800',
       textClass: 'text-emerald-700 dark:text-emerald-400 font-semibold',
     };
   } else {
     return {
       type: 'zero',
-      label: 'Solde réglé',
+      label: isArabic ? 'حساب مسوى' : 'Solde réglé',
       badgeClass: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
       textClass: 'text-slate-600 dark:text-slate-400',
     };
   }
 }
+
