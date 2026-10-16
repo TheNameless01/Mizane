@@ -30,7 +30,7 @@ export const MoneyDisplay: React.FC<MoneyDisplayProps> = ({
 
   return (
     <div className={`inline-flex items-center gap-2 ${className}`}>
-      <span className={`tabular-nums font-mono ${sizeClasses} ${status.textClass}`}>
+      <span dir="ltr" className={`tabular-nums font-mono ${sizeClasses} ${status.textClass}`}>
         {formatted}
       </span>
       {showBadge && (

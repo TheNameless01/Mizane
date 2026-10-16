@@ -122,9 +122,9 @@ export const NewAdjustmentModal: React.FC<NewAdjustmentModalProps> = ({
   return (
     <div
       dir={dir}
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto bg-slate-900/60 backdrop-blur-xs"
     >
-      <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[92vh] flex flex-col border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-lg w-full my-auto max-h-[92vh] sm:max-h-[88vh] flex flex-col border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         <div className="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <Sliders className="w-5 h-5 text-indigo-400" />
@@ -238,10 +238,11 @@ export const NewAdjustmentModal: React.FC<NewAdjustmentModalProps> = ({
                 type="text"
                 required
                 autoFocus
+                dir="ltr"
                 placeholder={isAr ? 'مثال: 85 000' : 'Ex: 85 000'}
                 value={amountInput}
                 onChange={(e) => setAmountInput(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg font-bold tabular-nums font-mono bg-white focus:ring-2 focus:ring-indigo-500"
+                className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg font-bold tabular-nums font-mono bg-white focus:ring-2 focus:ring-indigo-500 text-left"
               />
             </div>
 
@@ -252,6 +253,7 @@ export const NewAdjustmentModal: React.FC<NewAdjustmentModalProps> = ({
               <input
                 type="date"
                 required
+                dir="ltr"
                 value={adjustedAtDate}
                 onChange={(e) => setAdjustedAtDate(e.target.value)}
                 className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 font-mono"
@@ -276,19 +278,24 @@ export const NewAdjustmentModal: React.FC<NewAdjustmentModalProps> = ({
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 text-xs">
             <div className="flex justify-between text-slate-600">
               <span>{isAr ? 'الرصيد الحالي :' : 'Solde actuel :'}</span>
-              <span className="font-semibold tabular-nums font-mono">{formatDZD(currentBalanceCentimes, { locale })}</span>
+              <span dir="ltr" className="font-semibold tabular-nums font-mono">{formatDZD(currentBalanceCentimes, { locale })}</span>
             </div>
             <div className="flex justify-between text-slate-600">
               <span>{isAr ? 'مبلغ التسوية :' : 'Ajustement :'}</span>
-              <span className={`font-bold tabular-nums font-mono ${direction === 'debit' ? 'text-amber-700' : 'text-emerald-700'}`}>
+              <span dir="ltr" className={`font-bold tabular-nums font-mono ${direction === 'debit' ? 'text-amber-700' : 'text-emerald-700'}`}>
                 {direction === 'debit' ? '+' : '-'} {formatDZD(parsedCentimes, { locale })}
               </span>
             </div>
-            <div className="pt-2 border-t border-slate-200 flex justify-between font-bold text-xs sm:text-sm">
+            <div className="pt-2 border-t border-slate-200 flex justify-between items-center font-bold text-xs sm:text-sm">
               <span>{isAr ? 'الرصيد الجديد المتوقع :' : 'Nouveau solde :'}</span>
-              <span className={`tabular-nums font-mono ${resultingStatus.textClass}`}>
-                {formatDZD(resultingBalanceCentimes, { locale })} ({resultingStatus.label})
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span dir="ltr" className={`tabular-nums font-mono ${resultingStatus.textClass}`}>
+                  {formatDZD(resultingBalanceCentimes, { locale })}
+                </span>
+                <span className="text-xs font-normal text-slate-500">
+                  ({resultingStatus.label})
+                </span>
+              </div>
             </div>
           </div>
 

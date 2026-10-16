@@ -146,10 +146,10 @@ export const NewPaymentModal: React.FC<NewPaymentModalProps> = ({
   return (
     <div
       dir={dir}
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto bg-slate-900/60 backdrop-blur-xs"
     >
       {/* Modal Dialog Window: Fixed Max-Height & Flex Col prevents off-screen overflows */}
-      <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[92vh] flex flex-col border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-lg w-full my-auto max-h-[92vh] sm:max-h-[88vh] flex flex-col border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         
         {/* Sticky Header */}
         <div className="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
@@ -255,10 +255,11 @@ export const NewPaymentModal: React.FC<NewPaymentModalProps> = ({
                 type="text"
                 required
                 autoFocus
+                dir="ltr"
                 placeholder="Ex: 50 000 ou 50000,00"
                 value={amountInput}
                 onChange={(e) => setAmountInput(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-bold tabular-nums font-mono"
+                className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-bold tabular-nums font-mono text-left"
               />
             </div>
 
@@ -269,9 +270,10 @@ export const NewPaymentModal: React.FC<NewPaymentModalProps> = ({
               <input
                 type="date"
                 required
+                dir="ltr"
                 value={paidAtDate}
                 onChange={(e) => setPaidAtDate(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white font-mono"
               />
             </div>
           </div>
@@ -327,12 +329,12 @@ export const NewPaymentModal: React.FC<NewPaymentModalProps> = ({
             </span>
             <div className="flex items-center justify-between">
               <span className="text-slate-600">{locale === 'ar' ? 'الرصيد الحالي:' : 'Solde actuel :'}</span>
-              <span className="font-bold tabular-nums font-mono">{formatDZD(currentBalanceCentimes)}</span>
+              <span dir="ltr" className="font-bold tabular-nums font-mono">{formatDZD(currentBalanceCentimes, { locale })}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-slate-600">{locale === 'ar' ? 'المبلغ المخصوم:' : 'Versement déduit :'}</span>
-              <span className="font-bold text-emerald-600 tabular-nums font-mono">
-                - {formatDZD(parsedAmountCentimes)}
+              <span dir="ltr" className="font-bold text-emerald-600 tabular-nums font-mono">
+                - {formatDZD(parsedAmountCentimes, { locale })}
               </span>
             </div>
             <div className="pt-2 border-t border-slate-200 flex items-center justify-between font-bold text-sm">
@@ -340,8 +342,8 @@ export const NewPaymentModal: React.FC<NewPaymentModalProps> = ({
                 {locale === 'ar' ? 'الرصيد الجديد التقديري:' : 'Nouveau solde estimé :'}
               </span>
               <div className="text-end">
-                <span className={`font-black tabular-nums font-mono ${resultingStatus.textClass}`}>
-                  {formatDZD(resultingBalanceCentimes)}
+                <span dir="ltr" className={`font-black tabular-nums font-mono ${resultingStatus.textClass} inline-block`}>
+                  {formatDZD(resultingBalanceCentimes, { locale })}
                 </span>
                 <span className="block text-[11px] text-slate-500 font-normal">
                   {resultingBalanceCentimes > 0

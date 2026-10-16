@@ -54,13 +54,32 @@ export function calculateVat(htCentimes: number, vatRateBp: number | null): numb
 }
 
 /**
- * Normalizes input string by removing all kinds of whitespace (spaces, NBSP, thin NBSP),
- * and converting comma decimal separators to dots.
+ * Normalizes input string:
+ * - Converts Arabic-Indic numerals (٠-٩) and Eastern Arabic / Persian numerals (۰-۹) to standard Latin digits (0-9)
+ * - Converts Arabic comma (، U+060C) and Arabic decimal separator (٫ U+066B) to standard dot (.)
+ * - Removes Arabic thousands separator (٬ U+066C)
+ * - Normalizes unicode minus signs (U+2212, etc.) to standard hyphen (-)
+ * - Removes invisible bidi control characters (LRM, RLM)
+ * - Removes all whitespace variants (spaces, NBSP, thin NBSP)
+ * - Converts comma decimal separators to dots.
  */
 export function cleanNumberString(val: string): string {
+  if (!val) return '';
   return val
-    .replace(/[\s\u00A0\u202F\u2007\u200B\u2009]/g, '')
-    .replace(',', '.');
+    // Convert Arabic-Indic digits ٠-٩ (U+0660 to U+0669) to 0-9
+    .replace(/[\u0660-\u0669]/g, (d) => String.fromCharCode(d.charCodeAt(0) - 0x0660 + 48))
+    // Convert Eastern Arabic-Indic / Persian digits ۰-۹ (U+06F0 to U+06F9) to 0-9
+    .replace(/[\u06F0-\u06F9]/g, (d) => String.fromCharCode(d.charCodeAt(0) - 0x06F0 + 48))
+    // Convert Arabic comma and Arabic decimal separator to standard dot
+    .replace(/[\u060C\u066B,]/g, '.')
+    // Remove Arabic thousands separator
+    .replace(/[\u066C]/g, '')
+    // Normalize unicode minus signs to standard ASCII -
+    .replace(/[\u2212\u2010\u2011\u2012\u2013\u2014\u2015\uFE63\uFF0D]/g, '-')
+    // Remove invisible bidi formatting marks
+    .replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, '')
+    // Remove all whitespace variants
+    .replace(/[\s\u00A0\u202F\u2007\u200B\u2009]/g, '');
 }
 
 /**
@@ -159,7 +178,7 @@ export function formatQuantity(thousandths: number, unit?: string): string {
     const fracStr = (frac / 1000).toFixed(3).slice(2).replace(/0+$/, '');
     str += ',' + fracStr;
   }
-  return unit ? `${str} ${unit}` : str;
+  return unit ? `\u200E${str}\u200E ${unit}` : str;
 }
 
 /**
@@ -172,6 +191,8 @@ export function centimesToDZD(centimes: number): number {
 /**
  * Formats centimes into standard Algerian DZD currency representation.
  * Standard format: "1 250,00 DZD" with Latin digits.
+ * In Arabic mode, uses Left-to-Right marks (\u200E) to protect negative signs and decimals
+ * from bidirectional inversion in RTL views.
  */
 export function formatDZD(
   centimes: number,
@@ -202,8 +223,12 @@ export function formatDZD(
 
   const sign = isNegative ? '-' : options?.showSign && centimes > 0 ? '+' : '';
   const isArabic = options?.locale === 'ar';
-  const defaultSymbol = isArabic ? ' دج' : ' DZD';
-  const symbol = options?.showSymbol !== false ? (options?.symbol ? ` ${options.symbol}` : defaultSymbol) : '';
+  const defaultSymbol = isArabic ? 'دج' : 'DZD';
+  const symbol = options?.showSymbol !== false ? (options?.symbol ? ` ${options.symbol}` : ` ${defaultSymbol}`) : '';
+
+  if (isArabic) {
+    return `\u200E${sign}${formatted}\u200E${symbol}`;
+  }
 
   return `${sign}${formatted}${symbol}`;
 }

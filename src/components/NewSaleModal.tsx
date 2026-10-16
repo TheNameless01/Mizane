@@ -248,10 +248,10 @@ export const NewSaleModal: React.FC<NewSaleModalProps> = ({
   return (
     <div
       dir={dir}
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto bg-slate-900/60 backdrop-blur-xs"
     >
       {/* Modal Dialog Window: Fixed Max-Height & Flex Col prevents off-screen overflows */}
-      <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[92vh] flex flex-col border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-3xl w-full my-auto max-h-[92vh] sm:max-h-[88vh] flex flex-col border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         
         {/* Sticky Header */}
         <div className="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
@@ -365,9 +365,10 @@ export const NewSaleModal: React.FC<NewSaleModalProps> = ({
                 <input
                   type="date"
                   required
+                  dir="ltr"
                   value={soldAtDate}
                   onChange={(e) => setSoldAtDate(e.target.value)}
-                  className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                  className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-mono"
                 />
               </div>
             </div>
@@ -514,6 +515,7 @@ export const NewSaleModal: React.FC<NewSaleModalProps> = ({
                       <input
                         type="text"
                         required
+                        dir="ltr"
                         placeholder={locale === 'ar' ? 'الكمية' : 'Qté'}
                         value={item.quantityInput}
                         onChange={(e) => updateItem(idx, 'quantityInput', e.target.value)}
@@ -525,6 +527,7 @@ export const NewSaleModal: React.FC<NewSaleModalProps> = ({
                       <input
                         type="text"
                         required
+                        dir="ltr"
                         placeholder={locale === 'ar' ? 'السعر (دج)' : 'P.U (DZD)'}
                         value={item.priceInput}
                         onChange={(e) => updateItem(idx, 'priceInput', e.target.value)}
@@ -532,8 +535,8 @@ export const NewSaleModal: React.FC<NewSaleModalProps> = ({
                       />
                     </div>
 
-                    <div className="w-28 text-end text-xs font-bold text-slate-800 tabular-nums font-mono whitespace-nowrap">
-                      {formatDZD(computedLines[idx]?.total || 0, { showSymbol: false })}
+                    <div dir="ltr" className="w-28 text-end text-xs font-bold text-slate-800 tabular-nums font-mono whitespace-nowrap">
+                      {formatDZD(computedLines[idx]?.total || 0, { showSymbol: false, locale })}
                     </div>
 
                     <button
@@ -579,8 +582,8 @@ export const NewSaleModal: React.FC<NewSaleModalProps> = ({
             <span className="text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 block font-bold">
               {locale === 'ar' ? 'المجموع الكلي المطلوب' : 'Total à régler (TTC)'}
             </span>
-            <span className="text-xl sm:text-2xl font-black tabular-nums text-emerald-400">
-              {formatDZD(estimatedTotalCentimes)}
+            <span dir="ltr" className="text-xl sm:text-2xl font-black tabular-nums text-emerald-400 inline-block">
+              {formatDZD(estimatedTotalCentimes, { locale })}
             </span>
           </div>
 

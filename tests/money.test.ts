@@ -22,6 +22,11 @@ describe('Mizan Money & Arithmetic', () => {
     expect(parseMoneyToCentimes('0,75')).toBe(75);
     // Negative values
     expect(parseMoneyToCentimes('-2 500,00')).toBe(-250000);
+    // Arabic-Indic numerals (٠-٩) and Arabic decimal separator (٫) / comma (،)
+    expect(parseMoneyToCentimes('١ ٢٣٤،٥٠')).toBe(123450);
+    expect(parseMoneyToCentimes('1250٫50')).toBe(125050);
+    expect(parseMoneyToCentimes('٥٠٠')).toBe(50000);
+    expect(parseMoneyToCentimes('-٥٠٠')).toBe(-50000);
   });
 
   it('rejects garbage or malformed money inputs', () => {

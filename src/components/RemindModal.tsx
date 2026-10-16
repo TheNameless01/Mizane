@@ -71,10 +71,10 @@ ${businessName}`;
   return (
     <div
       dir={dir}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto bg-slate-900/60 backdrop-blur-xs"
     >
-      <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-        <div className="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-lg w-full my-auto max-h-[92vh] sm:max-h-[88vh] flex flex-col border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        <div className="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-emerald-400" />
             <h3 className="font-bold text-base sm:text-lg">
@@ -90,10 +90,10 @@ ${businessName}`;
           </button>
         </div>
 
-        <div className="p-4 sm:p-6 space-y-4">
+        <div className="p-4 sm:p-6 space-y-4 flex-1 overflow-y-auto">
           <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs sm:text-sm text-amber-900 flex items-center justify-between">
             <span className="font-semibold">{isAr ? 'الدين المستحق حالياً :' : 'Créance en cours :'}</span>
-            <span className="font-black text-base tabular-nums font-mono text-amber-950">{balanceText}</span>
+            <span dir="ltr" className="font-black text-base tabular-nums font-mono text-amber-950 inline-block">{balanceText}</span>
           </div>
 
           <div>

@@ -19,23 +19,27 @@ import {
 interface DashboardViewProps {
   metrics: DashboardMetrics | null;
   loading: boolean;
+  customersCount?: number;
   onOpenSaleModal: () => void;
   onOpenPaymentModal: () => void;
   onOpenCustomerModal: () => void;
   onSelectCustomer: (customerId: number) => void;
   onGoToAging: () => void;
   onGoToCustomers: () => void;
+  onSeedData?: () => Promise<void>;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
   metrics,
   loading,
+  customersCount,
   onOpenSaleModal,
   onOpenPaymentModal,
   onOpenCustomerModal,
   onSelectCustomer,
   onGoToAging,
   onGoToCustomers,
+  onSeedData,
 }) => {
   const { t, locale } = useI18n();
   const isAr = locale === 'ar';

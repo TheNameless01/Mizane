@@ -126,9 +126,9 @@ export const CustomerModal: React.FC<CustomerModalProps> = ({
   return (
     <div
       dir={dir}
-      className="fixed inset-0 z-[70] flex items-center justify-center p-2 sm:p-4 bg-slate-900/70 backdrop-blur-xs"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto bg-slate-950/70 backdrop-blur-xs"
     >
-      <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[92vh] flex flex-col border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-lg w-full my-auto max-h-[92vh] sm:max-h-[88vh] flex flex-col border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         <div className="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <UserPlus className="w-5 h-5 text-indigo-400" />
@@ -177,10 +177,11 @@ export const CustomerModal: React.FC<CustomerModalProps> = ({
               </label>
               <input
                 type="text"
+                dir="ltr"
                 placeholder={isAr ? '0555 12 34 56' : 'Ex: 0555 12 34 56'}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-mono text-left"
               />
             </div>
             <div>
@@ -191,9 +192,10 @@ export const CustomerModal: React.FC<CustomerModalProps> = ({
                 type="number"
                 min="0"
                 max="365"
+                dir="ltr"
                 value={paymentTermsDays}
                 onChange={(e) => setPaymentTermsDays(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-mono"
+                className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-mono text-left"
               />
             </div>
           </div>
@@ -204,10 +206,11 @@ export const CustomerModal: React.FC<CustomerModalProps> = ({
             </label>
             <input
               type="text"
+              dir="ltr"
               placeholder={isAr ? 'مثال: 500 000 (اتركه فارغاً إذا كان غير محدود)' : 'Ex: 500 000 (laisser vide si illimité)'}
               value={creditLimitDzd}
               onChange={(e) => setCreditLimitDzd(e.target.value)}
-              className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-mono"
+              className="w-full text-xs sm:text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-mono text-left"
             />
             <p className="text-[11px] text-slate-500 mt-1">
               {isAr
